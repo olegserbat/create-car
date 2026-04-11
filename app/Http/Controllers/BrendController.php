@@ -2,42 +2,70 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreBrendRequest;
+use App\Models\Brend;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+
 
 class BrendController extends Controller
 {
     public function index()
     {
-        return 'all brends';
+        $brends = Brend::all();
+        return view('brend.index', compact('brends'));
     }
 
     public function create()
     {
-        return 'new brend';
+        return view('brend.create');
     }
 
-    public function storage()
+    public function store(StoreBrendRequest $request):RedirectResponse
     {
-        return "save brend";
+        $validatedData = $request->validated();
+        $brend = new Brend();
+        $brend->fill($validatedData);
+        $brend->user_id = Auth::id();
+        $brend->save();
+        return redirect()->route('brend.index')->with("status", "Бренд ".$brend->name." успешно добавлен");
     }
 
-    public function show($brend)
+    public function edit($id)
     {
-        return 'brend:'."$brend";
+        $brend = Brend::find($id);
+        if (!$brend) {
+            abort(404);
+        }
+        if($brend->user_id != Auth::id()){
+            abort(403, 'Доступ запрещен');
+        }
+        return view('brend.edit', ['name'=>$brend->name, 'id'=>$brend->id, 'comment'=>$brend->comment]);
     }
 
-    public function edit($brend)
+    public function update(StoreBrendRequest $request):RedirectResponse
     {
-        return "edit $brend";
+        $brend = Brend::find($request->id);
+        if($brend->user_id != Auth::id()){
+            abort(403, 'Доступ запрещен');
+        }
+        $validatedData = $request->validated();
+        $brend->fill($validatedData);
+        $brend->save();
+        return redirect()->route('brend.index')->with("status", "Бренд ".$brend->name." успешно изменен");
     }
 
-    public function update()
+    public function destroy($id):RedirectResponse
     {
-        return 'update';
+        $brend = Brend::find($id);
+        if(Auth::user()->name === 'admin'){
+            abort(403, 'Доступ запрещен');
+        }
+        $brend->delete();
+        return redirect()->route('brend.index')->with("status", "Бренд успешно удален");
     }
 
-    public function destroy($brend)
-    {
-        return "delete ".$brend;
-    }
+
 }

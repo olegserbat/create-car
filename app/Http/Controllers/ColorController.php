@@ -4,15 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreColorRequest;
 use App\Models\Color;
+use App\Models\User;
+use Illuminate\Container\Attributes\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
+
+
+
 
 class ColorController extends Controller
 {
     public function index()
     {
         $colors = Color::all();
-
         return view('colors.index', ['colors' => $colors]);
     }
 

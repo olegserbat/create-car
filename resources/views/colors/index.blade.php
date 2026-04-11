@@ -18,8 +18,12 @@
             <th>id</th>
             <th>Название цвета</th>
             <th>Доплнительная оплата за цвет</th>
+            @auth()
             <th>Возможность изменить стоимость</th>
-            <th>Удалить</th>
+            @if(\Illuminate\Support\Facades\Auth::user()->name == 'admin')
+                <th>Удалить</th>
+                @endif
+            @endauth
         </tr>
         </thead>
         <tbody>
@@ -28,8 +32,10 @@
             <td>{{$color->id}}</td>
             <td>{{$color->name}}</td>
             <td>{{$color->price}}</td>
+            @auth()
             <td><a href="/colors/{{$color->id}}/edit">Изменить стоимость</a></td>
-            <td>
+                @if(\Illuminate\Support\Facades\Auth::user()->name == 'admin')
+                <td>
                 <form action="{{ url('/colors/'.$color->id) }}" method="POST">
                     {{ csrf_field() }}
                     {{ method_field('DELETE') }}
@@ -37,6 +43,8 @@
                         <i class="fa fa-btn fa-trash"></i>Удалить </button>
                 </form>
             </td>
+                @endif
+            @endauth
         </tr>
         @endforeach
         </tbody>
