@@ -12,7 +12,7 @@
             @if ($errors->get('comment'))
                 <div class="alert alert-danger">
                     <ul>
-                        @foreach ($errors->get('price') as $error)
+                        @foreach ($errors->get('comment') as $error)
                             <li>{{ $error }}</li>
                         @endforeach
                     </ul>
@@ -23,3 +23,5 @@
         <button type="submit" class="btn btn-primary">Отправить</button>
     </form>
 @endsection
+
+

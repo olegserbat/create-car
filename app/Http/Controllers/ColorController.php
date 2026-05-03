@@ -7,6 +7,7 @@ use App\Models\Color;
 use App\Models\User;
 use Illuminate\Container\Attributes\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 
 
@@ -26,10 +27,6 @@ class ColorController extends Controller
         return view('colors.color_create', ['payment'=>$request->payment]);
     }
 
-    public function show($color)
-    {
-        return'show color with name:'."$color";
-    }
 
     public function storage(StoreColorRequest $request)
     {
@@ -59,7 +56,7 @@ class ColorController extends Controller
     {
         $color = Color::find($request->id);
         $validateData = $request->validated();
-        $isFree = $request->price === 0 ? true : false;
+        $isFree = $request->price == 0 ? true : false;
         $validateData['isFree'] = $isFree;
         $color->fill($validateData);
         $color->save();
@@ -69,6 +66,10 @@ class ColorController extends Controller
     public function destroy($id)
     {
         $color = Color::find($id);
+        if(Auth::user()->name !== 'admin')
+        {
+            abort(403);
+        }
         $color->delete();
         return redirect()->route('color.index')->with("warning", "Цвет $color->name успешно удален");
     }

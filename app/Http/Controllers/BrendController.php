@@ -40,9 +40,10 @@ class BrendController extends Controller
             abort(404);
         }
         if($brend->user_id != Auth::id()){
-            abort(403, 'Доступ запрещен');
+            return redirect()->route('brend.index')->with("alert", "комментарий к бренду ".$brend->name."
+            не может быть изменен не создателем этого бренда");
         }
-        return view('brend.edit', ['name'=>$brend->name, 'id'=>$brend->id, 'comment'=>$brend->comment]);
+         return view('brend.edit', ['name'=>$brend->name, 'id'=>$brend->id, 'comment'=>$brend->comment]);
     }
 
     public function update(StoreBrendRequest $request):RedirectResponse
@@ -60,7 +61,7 @@ class BrendController extends Controller
     public function destroy($id):RedirectResponse
     {
         $brend = Brend::find($id);
-        if(Auth::user()->name === 'admin'){
+        if(Auth::user()->name !== 'admin'){
             abort(403, 'Доступ запрещен');
         }
         $brend->delete();
