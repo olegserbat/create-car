@@ -4,8 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Livewire\Counter;
 use App\Http\Controllers\ColorController;
 use Illuminate\Auth\Middleware\Authenticate;
+use App\Http\Controllers\CarController;
 
-Route::view('/', 'layouts.base');
+Route::view('/', 'main')->name('main');
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
@@ -18,7 +19,6 @@ Route::view('profile', 'profile')
 require __DIR__.'/auth.php';
 
 
-Route::get('/counter', Counter::class);
 
 Route::get('/colors', [ColorController::class, 'index'])->name('color.index')->middleware('auth');
 Route::get('/colors/create', [ColorController::class, 'create'])->name('color.create')->middleware('auth');
@@ -33,4 +33,14 @@ Route::post('/brends', 'App\Http\Controllers\BrendController@store')->name('bren
 Route::get('/brends/{brend}/edit', 'App\Http\Controllers\BrendController@edit')->name('brend.edit')->middleware('auth');
 Route::patch('/brends/update', 'App\Http\Controllers\BrendController@update')->name('brend.update')->middleware('auth');
 Route::delete('/brends/{brend}', 'App\Http\Controllers\BrendController@destroy')->name('brend.delete')->middleware('auth');
+
+
+// Остальные действия — только для авторизованных
+Route::middleware(['auth'])->group(function () {
+    Route::resource('cars', CarController::class)->except(['index', 'show']);
+});
+
+// Просмотр списка и отдельного автомобиля — доступен всем
+Route::get('/cars', [CarController::class, 'index'])->name('cars.index');
+Route::get('/cars/{car}', [CarController::class, 'show'])->name('cars.show');
 
