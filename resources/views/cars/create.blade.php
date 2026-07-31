@@ -26,13 +26,20 @@
                 @enderror
             </div>
 
+            <!-- Выбор цвета -->
             <div class="mb-3">
                 <label for="color_id" class="form-label">Цвет</label>
-                <select name="color_id" id="color_id" class="form-control @error('color_id') is-invalid @enderror" required>
+                <select
+                    name="color_id"
+                    id="color_id"
+                    class="form-control @error('color_id') is-invalid @enderror"
+                    wire:model.live="colorId"
+                    required
+                >
                     <option value="">Выберите цвет</option>
                     @foreach($colors as $color)
-                        <option value="{{ $color->id }}" {{ old('color_id') == $color->id ? 'selected' : '' }}>
-                            {{ $color->name }} {{ ", к цене будет добавлена дополнительная цена за цвет $color->price" }}
+                        <option value="{{ $color->id }}">
+                            {{ $color->name }} — {{ number_format($color->price, 2) }} ₽
                         </option>
                     @endforeach
                 </select>
@@ -40,6 +47,9 @@
                 <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
+
+            <!-- Поле с отображением стоимости цвета -->
+            @livewire('color-price')
 
             <div class="mb-3">
                 <label for="total_price" class="form-label">Цена</label>

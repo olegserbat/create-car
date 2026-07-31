@@ -40,10 +40,17 @@
         <div class="bg-light py-5 text-center">
             <div class="container">
                 <h2 class="mb-3">Готовы начать?</h2>
-                <p class="lead text-muted mb-4">Найдите идеальный автомобиль уже сегодня</p>
-                <a href="{{ route('cars.index') }}" class="btn btn-primary btn-lg px-4">Выбор машины</a>        </div>
+                <p class="lead text-muted mb-4">Закажите идеальный автомобиль уже сегодня</p>
+                <a href="{{ route('cars.index') }}" class="btn btn-primary btn-lg px-4">Заказ машин</a>        </div>
 
-        <!-- Подвал -->
+            <!-- Призыв к действию -->
+            <div class="bg-light py-5 text-center">
+                <div class="container">
+                    <p class="lead text-muted mb-4">Или найдите его на нашем складе</p>
+                    <a href="{{ route('car-stock.index') }}" class="btn btn-primary btn-lg px-4">Выбор машины из наличия</a>        </div>
+
+
+                <!-- Подвал -->
         <footer class="bg-dark text-white text-center py-4 mt-5">
             <div class="container">
                 <p class="mb-0">&copy; {{ date('Y') }}  OlegTeamCarSelect — Ваш надёжный помощник в выборе автомобиля.</p>

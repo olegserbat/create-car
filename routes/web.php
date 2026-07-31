@@ -5,6 +5,7 @@ use App\Livewire\Counter;
 use App\Http\Controllers\ColorController;
 use Illuminate\Auth\Middleware\Authenticate;
 use App\Http\Controllers\CarController;
+use App\Http\Controllers\CarStockController;
 
 Route::view('/', 'main')->name('main');
 
@@ -44,3 +45,15 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/cars', [CarController::class, 'index'])->name('cars.index');
 Route::get('/cars/{car}', [CarController::class, 'show'])->name('cars.show');
 
+
+// только для авторизованных:
+Route::middleware(['auth'])->group(function () {
+    Route::post('/car-stocks', [CarStockController::class, 'store'])->name('car-stock.store');
+    Route::get('/car-stocks/create', [CarStockController::class, 'create'])->name('car-stock.create');
+    Route::get('/car-stocks/{carStock}/edit', [CarStockController::class, 'edit'])->name('car-stock.edit');
+    Route::patch('/car-stocks/{carStock}', [CarStockController::class, 'update'])->name('car-stock.update');
+    Route::delete('/car-stocks/{carStock}', [CarStockController::class, 'destroy'])->name('car-stock.destroy');
+});
+
+Route::get('/car-stocks', [CarStockController::class, 'index'])->name('car-stock.index');
+Route::get('/car-stocks/{carStock}', [CarStockController::class, 'show'])->name('car-stock.show');

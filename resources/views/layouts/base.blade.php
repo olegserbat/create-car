@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Выбор машины</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    @livewireStyles
     <style>
         body {
             background-image: url('https://images.unsplash.com/photo-1580273916550-e323be2ae537?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
@@ -52,7 +53,8 @@
     <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="light">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">На главную страницу</a>
-            <a class="navbar-brand" href="/cars">Выбор машины</a>
+            <a class="navbar-brand" href="/cars">Выбор машины под заказ</a>
+            <a class="navbar-brand" href="/car-stocks">Автомобили на складе</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -66,9 +68,6 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/colors">Цвета</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link disabled" aria-disabled="true">В разработке</a>
                         </li>
                     </ul>
                 @endif
@@ -102,5 +101,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
+@livewireScripts
 </body>
 </html>

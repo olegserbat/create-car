@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="container">
-        <h1>Автомобили</h1>
+        <h1>Автомобили под заказ</h1>
         @auth
         <a href="/cars/create" class="btn btn-primary mb-3">Добавить автомобиль</a>
         @endauth

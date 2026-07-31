@@ -9,8 +9,8 @@ use Illuminate\Container\Attributes\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
-
-
+use App\Models\Car;
+use function PHPUnit\Framework\isNull;
 
 
 class ColorController extends Controller
@@ -55,6 +55,10 @@ class ColorController extends Controller
     public function update(StoreColorRequest $request)
     {
         $color = Color::find($request->id);
+        if($color->cars->count() != 0){
+            return redirect()->route('color.index')->with("warning",
+                "Цвет $color->name используется и не может быть изменен");
+        }
         $validateData = $request->validated();
         $isFree = $request->price == 0 ? true : false;
         $validateData['isFree'] = $isFree;
@@ -66,6 +70,10 @@ class ColorController extends Controller
     public function destroy($id)
     {
         $color = Color::find($id);
+        if($color->cars->count() != 0){
+            return redirect()->route('color.index')->with("warning",
+                "Цвет $color->name используется и не может быть удален");
+        }
         if(Auth::user()->name !== 'admin')
         {
             abort(403);

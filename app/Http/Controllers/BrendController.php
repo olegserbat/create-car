@@ -61,6 +61,11 @@ class BrendController extends Controller
     public function destroy($id):RedirectResponse
     {
         $brend = Brend::find($id);
+        if($brend->cars->count() > 0) {
+            return redirect()->route('brend.index')->with("alert", "Бренд удалить нельзя,
+            есть машины с этим брендом");
+
+        }
         if(Auth::user()->name !== 'admin'){
             abort(403, 'Доступ запрещен');
         }
