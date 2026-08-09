@@ -1,62 +1,132 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# OlegTeamCarSelect — простой сайт по подбору, покупке и продаже автомобилей
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Учебно-демонстрационный веб-проект на PHP (Laravel): витрина автосалона, где
+посетитель смотрит машины, а зарегистрированный пользователь выставляет свою
+машину на продажу, собирает автомобиль «под заказ» и ведёт склад наличия.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 1. О чём проект простыми словами
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Небольшой автосалон с двумя витринами:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+| Витрина | Что это | Раздел |
+|---|---|---|
+| **Автомобили под заказ** | Машин физически нет: пользователь «собирает» машину — бренд, цвет, комментарий, цена. Доплата за цвет автоматически прибавляется к цене. | `/cars` |
+| **Склад (в наличии)** | Машины, которые уже есть: бренд, цвет, цена, количество, описание, статус «в наличии / забронирован». | `/car-stocks` |
 
-## Learning Laravel
+Плюс два справочника, из которых собираются машины под заказ: **бренды**
+(`/brends`) и **цвета** (`/colors`, с доплатой — например, «металлик 5 000 ₽»).
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Главная страница (`/`) — витрина с кнопками «Заказ машин» и «Выбор машины из
+наличия».
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 2. Кто что может делать (роли)
 
-## Laravel Sponsors
+Возможности зависят от того, вошёл ли человек в аккаунт.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+**Гость — покупатель, который смотрит:** главная страница, каталог машин под
+заказ и склад, карточка любой машины, регистрация и вход. Добавлять и менять
+что-либо нельзя — система перенаправит на страницу входа.
 
-### Premium Partners
+**Зарегистрированный пользователь — заказчик и продавец:**
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+- *заказ машины*: создать конфигурацию «бренд + цвет + комментарий + цена»;
+  итоговая цена = указанная цена + доплата за цвет. Машина попадает в общий
+  каталог и подписывается именем автора;
+- *продажа своих машин*: редактировать и удалять **только свои** записи. Чужую
+  машину изменить нельзя — вернётся ошибка 403 «Вы не можете выполнять это
+  действие»;
+- *склад*: добавлять машины в наличии (бренд, цвет, цена, количество, описание,
+  статус брони), менять цену и количество;
+- *справочники*: добавлять, изменять и удалять бренды и цвета.
 
-## Contributing
+**Администратор.** Отдельной роли нет: пользователь с именем `admin`
+дополнительно видит кнопку «Удалить» в списке склада. Поле `is_admin` в таблице
+пользователей заведено, но в логике пока не используется.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+## 3. Типичный сценарий
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+1. Гость заходит на главную и открывает каталог.
+2. Регистрируется (имя, e-mail, пароль).
+3. Идёт в «Автомобили под заказ» → «Добавить автомобиль»: бренд `BMW`, цвет
+   `Красный` (доплата 5 000 ₽), цена 1 000 000 ₽. В каталоге появляется машина с
+   итоговой ценой **1 005 000 ₽** и его именем в графе «Владелец».
+4. Машины, которые есть в наличии, заводит на складе с количеством штук.
+5. Позже правит цену своего объявления или удаляет его.
 
-## Security Vulnerabilities
+> Корзина и оформление покупки пока не реализованы: таблица `purchases` и поле
+> «забронировано» в базе есть, но экранов оплаты и кнопки «Купить» нет.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## 4. Карта разделов сайта
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-# create-car
+| Адрес | Что показывает | Кому доступно |
+|---|---|---|
+| `/` | Главная страница-витрина | всем |
+| `/cars`, `/cars/{id}` | Каталог машин под заказ и карточка | всем |
+| `/cars/create`, `/cars/{id}/edit` | Создание / изменение машины | владельцу записи |
+| `/car-stocks`, `/car-stocks/{id}` | Склад и карточка машины | всем |
+| `/car-stocks/create`, `/car-stocks/{id}/edit` | Добавление / изменение на складе | после входа |
+| `/brends`, `/colors` | Справочники брендов и цветов | после входа |
+| `/dashboard`, `/profile` | Личный кабинет и профиль | после входа |
+| `/login`, `/register` | Вход и регистрация | гостям |
+
+---
+
+## 5. Техническая часть
+
+**Стек:** PHP 8.2+, Laravel 12, Livewire 3 + Volt, Blade, Bootstrap 5, MySQL 8,
+аутентификация Laravel Breeze, Docker через Laravel Sail.
+
+**Модели и таблицы** (`app/Models`, `database/migrations`):
+
+| Модель | Таблица | Назначение |
+|---|---|---|
+| `Brend` | `brends` | Справочник брендов |
+| `Color` | `colors` | Цвета и доплата за цвет |
+| `Car` | `cars` | Машина под заказ: бренд, цвет, владелец (`owner_id`), `total_price` |
+| `CarStock` | `car_stocks` | Склад: количество, бронь, статус, метод `available()` — остаток за вычетом брони |
+| `Purchase` | `purchases` | Заготовка под оформленные покупки |
+| `User` | `users` | Пользователи (имя уникально, есть неиспользуемое `is_admin`) |
+
+Контроллеры — `app/Http/Controllers` (проверка «только владелец» в
+`CarController::authorizeOwner()`), валидация форм с русскими сообщениями —
+`app/Http/Requests`, маршруты — `routes/web.php` и `routes/auth.php`.
+Livewire-компонент `ColorPrice` показывает цену выбранного цвета в форме без
+перезагрузки страницы.
+
+---
+
+## 6. Запуск
+
+С Docker (Laravel Sail) — сайт на `http://localhost`, почта Mailpit на `http://localhost:8025`:
+
+```bash
+cp .env.example .env && composer install && ./vendor/bin/sail up -d && ./vendor/bin/sail artisan key:generate && ./vendor/bin/sail artisan migrate
+```
+
+Без Docker — создайте базу `simple_car_project`, пропишите доступы в `.env`, затем:
+
+```bash
+composer install && npm install && php artisan key:generate && php artisan migrate && composer run dev
+```
+
+## 7. Тесты и стиль кода
+
+Тесты в `tests/Feature` покрывают автомобили, бренды, цвета, пользователей,
+профиль и вход (`CarTest` проверяет в том числе запрет на изменение чужой
+машины). Тестов на склад пока нет.
+
+```bash
+php artisan test
+```
+
+```bash
+make lint
+```
